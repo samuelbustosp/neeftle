@@ -42,6 +42,7 @@ const App = () => {
             <PrivateLayout
               currentAccount={blockchain.currentAccount}
               onLogout={blockchain.disconnectWallet}
+              logs={blockchain.logs}
             />
           }
         >
@@ -67,6 +68,7 @@ const App = () => {
               onListNFT={blockchain.listNFT}
               onCancelListing={blockchain.cancelListing}
               onListAllNFTs={blockchain.listAllUserNFTs}
+               onBurnNFT={blockchain.burnNFT}
             />
           } />
         </Route>

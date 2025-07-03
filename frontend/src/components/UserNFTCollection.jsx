@@ -16,6 +16,7 @@ import {
   Eye
 } from 'lucide-react';
 import NFTCard from './NFTCard';
+import LogDisplay from './LogDisplay';
 
 const UserNFTCollection = ({ 
   userNFTs = [], 
@@ -23,12 +24,14 @@ const UserNFTCollection = ({
   onListNFT, 
   onCancelListing, 
   onListAllNFTs,
-  currentAccount 
+  currentAccount,
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [viewMode, setViewMode] = useState('grid');
   const [selectedStatus, setSelectedStatus] = useState('All');
+  console.log("userNFTs =>", userNFTs);
+
 
   const categories = ['All', 'Art', 'Digital', 'Photography', 'Abstract', 'Character', 'Space'];
   const statusOptions = ['All', 'Listed', 'Not Listed'];
@@ -266,6 +269,7 @@ const UserNFTCollection = ({
                     onAction={nft.isListed ? onCancelListing : onListNFT}
                     actionType={nft.isListed ? 'cancel' : 'list'}
                     isOwner={true}
+                    
                   />
                 ))}
               </div>

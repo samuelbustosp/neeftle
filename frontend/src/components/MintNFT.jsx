@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { LISTING_PRICE_DEFAULT } from '../config/constants';
 
 const MintNFT = ({ onMintNFT, isConnected }) => {
   const [showForm, setShowForm] = useState(false);
@@ -7,13 +6,13 @@ const MintNFT = ({ onMintNFT, isConnected }) => {
     name: '',
     description: '',
     image: null,
-    price: LISTING_PRICE_DEFAULT,
+    price: '',
     rarity: 'Common' // ✅ Agregado campo rarity
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleInputChange = (e) => {
-    const { name, type, value, files } = e.target;
+    const { name, type, value, files, price } = e.target;
     
     if (type === 'file') {
       if (files.length === 0) return;
@@ -34,6 +33,10 @@ const MintNFT = ({ onMintNFT, isConnected }) => {
       alert('Por favor, rellena todos los campos y selecciona una imagen.');
       return;
     }
+    console.log("Mint NFT con datos:", {
+      ...formData,
+      price: Number(formData.price)
+    });
 
     setIsSubmitting(true);
     try {
@@ -45,7 +48,7 @@ const MintNFT = ({ onMintNFT, isConnected }) => {
         name: '',
         description: '',
         image: null,
-        price: LISTING_PRICE_DEFAULT,
+        price: '',
         rarity: 'Common' // ✅ Resetear rarity también
       });
       setShowForm(false);

@@ -1,9 +1,10 @@
 import React from 'react';
 
-const NFTCard = ({ nft, onAction, actionType, isOwner }) => {
+const NFTCard = ({ nft, onAction, actionType, isOwner}) => {
+  console.log('nft image',nft.image)
   const getActionButton = () => {
     if (!onAction) return null;
-
+  
     switch (actionType) {
       case 'list':
         return (

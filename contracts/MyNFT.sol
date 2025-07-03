@@ -34,10 +34,11 @@ contract MyNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         unchecked {
             _tokenIdCounter++;
         }
-
         _safeMint(_to, tokenId);
         _setTokenURI(tokenId, _tokenURI);
     }
+
+    
 
     // --- REQUIRED OVERRIDES FOR MULTIPLE INHERITANCE ---
 

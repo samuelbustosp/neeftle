@@ -35,6 +35,7 @@ const Marketplace = ({
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [viewMode, setViewMode] = useState('grid');
   const [likedNFTs, setLikedNFTs] = useState(new Set());
+  console.log('marketplaceNFTs',marketplaceNFTs)
 
   const categories = ['All', 'Art', 'Digital', 'Photography', 'Abstract', 'Character', 'Space'];
 

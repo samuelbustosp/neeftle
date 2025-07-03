@@ -15,4 +15,3 @@ export const  MyNFTABI = MyNFT.abi
 
 export const MarketplaceABI = Marketplace.abi
 
-export const LISTING_PRICE_DEFAULT = "100";

@@ -31,8 +31,8 @@ export const useBlockchain = () => {
   const [isLoadingUser, setIsLoadingUser] = useState(false);
   const [isLoadingMarketplace, setIsLoadingMarketplace] = useState(false);
 
-  // Usar useRef para evitar recrear las funciones constantemente
-  const hasLoadedUserNFTs = useRef(false);
+  // Ref para evitar cargas múltiples
+  const loadingRef = useRef(false);
 
   const addLog = useCallback((message, type = 'info') => {
     const newLog = { message, type, timestamp: Date.now() };
@@ -56,7 +56,7 @@ export const useBlockchain = () => {
       }
 
       const provider = new BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner(); // Await aquí
+      const signer = await provider.getSigner();
       const currentAccount = accounts[0];
 
       const contracts = {
@@ -74,63 +74,55 @@ export const useBlockchain = () => {
         contracts
       });
 
-      // Reset flag when connecting
-      hasLoadedUserNFTs.current = false;
+      // Reset refs
+      loadingRef.current = false;
       
       addLog("✅ Billetera conectada.", 'success');
+      
+      // Cargar NFTs inmediatamente después de conectar
+      setTimeout(() => {
+        loadUserNFTsInternal(provider, currentAccount, contracts);
+      }, 100);
+
     } catch (error) {
       addLog("❌ Error conectando billetera: " + error.message, 'error');
     }
   }, [addLog]);
 
-  const addHardhatNetwork = useCallback(async () => {
-    if (!window.ethereum) {
-      alert("No tienes MetaMask instalado.");
+  // Función interna para cargar NFTs sin dependencias circulares
+  const loadUserNFTsInternal = async (provider, currentAccount, contracts, forceReload = false) => {
+    if (!provider || !currentAccount || !contracts.myNFT) {
+      console.log("❌ Faltan datos para cargar NFTs:", { provider: !!provider, currentAccount: !!currentAccount, contracts: !!contracts.myNFT });
       return;
     }
-    try {
-      await window.ethereum.request({
-        method: 'wallet_addEthereumChain',
-        params: [{
-          chainId: '0x7A69',
-          chainName: 'Hardhat Localhost',
-          nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
-          rpcUrls: ['http://127.0.0.1:8545'],
-          blockExplorerUrls: []
-        }]
-      });
-      addLog("✅ Red Hardhat añadida a MetaMask.", 'success');
-    } catch (error) {
-      addLog("❌ Error añadiendo red: " + error.message, 'error');
+
+    if (loadingRef.current && !forceReload) {
+      console.log("⏸️ Ya hay una carga en progreso");
+      return;
     }
-  }, [addLog]);
 
-  // Separar la lógica de carga para evitar dependencias circulares
-  const loadUserNFTs = useCallback(async (forceReload = false) => {
-    if (!state.isConnected || !state.provider || !state.currentAccount) return;
-    if (isLoadingUser) return;
-    
-    // Evitar cargas múltiples innecesarias
-    if (!forceReload && hasLoadedUserNFTs.current) return;
-
+    console.log("🔄 Iniciando carga de NFTs del usuario...");
+    loadingRef.current = true;
     setIsLoadingUser(true);
 
     try {
-      const { currentAccount, provider } = state;
-
       const myNFTReadOnly = new ethers.Contract(CONTRACTS.MY_NFT_ADDRESS, MyNFTABI, provider);
       const marketplaceReadOnly = new ethers.Contract(CONTRACTS.MARKETPLACE_ADDRESS, MarketplaceABI, provider);
 
       const balance = await myNFTReadOnly.balanceOf(currentAccount);
+      console.log(`👤 Usuario ${currentAccount} tiene ${balance.toString()} NFTs`);
+
       const nfts = [];
 
       for (let i = 0; i < Number(balance); i++) {
         try {
           const tokenId = await myNFTReadOnly.tokenOfOwnerByIndex(currentAccount, i);
+          console.log(`🔍 Procesando NFT con ID: ${tokenId.toString()}`);
+
           const tokenURI = await myNFTReadOnly.tokenURI(tokenId);
 
           if (!tokenURI || tokenURI.trim() === '') {
-            addLog(`⚠️ NFT ID ${tokenId} no tiene tokenURI válido`, 'warning');
+            console.log(`⚠️ NFT ID ${tokenId} no tiene tokenURI válido`);
             nfts.push({
               tokenId: tokenId.toString(),
               name: `NFT #${tokenId} (Sin Metadatos)`,
@@ -149,7 +141,7 @@ export const useBlockchain = () => {
 
           try {
             const httpUrl = convertIpfsUriToHttp(tokenURI);
-            console.log(`Intentando cargar metadatos desde: ${httpUrl}`);
+            console.log(`📡 Cargando metadatos desde: ${httpUrl}`);
             
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 10000);
@@ -173,6 +165,7 @@ export const useBlockchain = () => {
             }
 
             metadata = await metaResponse.json();
+            console.log(`✅ Metadatos cargados para NFT ${tokenId}:`, metadata);
             
             if (typeof metadata !== 'object' || metadata === null) {
               throw new Error('Metadatos no son un objeto válido');
@@ -180,7 +173,7 @@ export const useBlockchain = () => {
 
           } catch (error) {
             metadataError = error.message;
-            addLog(`⚠️ Error cargando metadatos para NFT ID ${tokenId}: ${error.message}`, 'warning');
+            console.log(`⚠️ Error cargando metadatos para NFT ID ${tokenId}: ${error.message}`);
             
             metadata = {
               name: `NFT #${tokenId}`,
@@ -192,17 +185,29 @@ export const useBlockchain = () => {
           let isListed = false;
           let price = "0";
 
+          // 1. Intentar obtener precio desde el marketplace
           try {
             if (marketplaceReadOnly) {
               const listing = await marketplaceReadOnly.idToListing(tokenId);
               isListed = listing.isListed;
-              if (isListed) price = ethers.formatUnits(listing.price, 18);
+              if (isListed) {
+                price = ethers.formatUnits(listing.price, 18);
+              }
             }
           } catch (error) {
-            addLog(`⚠️ Error verificando listado para NFT ID ${tokenId}: ${error.message}`, 'warning');
+            console.log(`⚠️ Error verificando listado para NFT ID ${tokenId}: ${error.message}`);
           }
 
-          nfts.push({
+          // ✅ 2. Si no está listado, intentar obtener el precio desde los metadatos
+          if (!isListed && metadata?.attributes) {
+            const priceAttr = metadata.attributes.find(attr => attr.trait_type === "Listing Price");
+            if (priceAttr && priceAttr.value) {
+              price = priceAttr.value.toString(); // o `String(priceAttr.value)`
+            }
+          }
+
+
+          const nftData = {
             tokenId: tokenId.toString(),
             name: metadata.name || `NFT #${tokenId}`,
             description: metadata.description || 'Sin descripción',
@@ -213,18 +218,21 @@ export const useBlockchain = () => {
             hasError: !!metadataError,
             errorMessage: metadataError,
             rawTokenURI: tokenURI
-          });
+          };
 
-          addLog(`✅ NFT ID ${tokenId} cargado ${metadataError ? 'con errores' : 'correctamente'}`, metadataError ? 'warning' : 'success');
+          nfts.push(nftData);
+          console.log(`✅ NFT ${tokenId} procesado correctamente:`, nftData);
 
         } catch (error) {
-          addLog(`❌ Error procesando NFT en índice ${i}: ${error.message}`, 'error');
+          console.log(`❌ Error procesando NFT en índice ${i}: ${error.message}`);
           continue;
         }
       }
 
+      console.log(`🎉 Carga completada. Total NFTs procesados: ${nfts.length}`);
+      console.log("📋 NFTs cargados:", nfts);
+
       setUserNFTs(nfts);
-      hasLoadedUserNFTs.current = true; // Marcar como cargado
       
       const errorsCount = nfts.filter(nft => nft.hasError).length;
       const successCount = nfts.length - errorsCount;
@@ -235,12 +243,53 @@ export const useBlockchain = () => {
       );
 
     } catch (error) {
+      console.error("❌ Error crítico cargando NFTs del usuario:", error);
       addLog("❌ Error crítico cargando NFTs del usuario: " + error.message, 'error');
-      console.error('Error detallado:', error);
     } finally {
       setIsLoadingUser(false);
+      loadingRef.current = false;
     }
-  }, [state.isConnected, state.currentAccount, state.provider, isLoadingUser, addLog]);
+  };
+
+  // Función pública para cargar NFTs
+  const loadUserNFTs = useCallback(async (forceReload = false) => {
+    console.log("🔄 loadUserNFTs llamado - Estado actual:", {
+      isConnected: state.isConnected,
+      currentAccount: state.currentAccount,
+      hasProvider: !!state.provider,
+      hasContracts: !!state.contracts.myNFT,
+      forceReload
+    });
+
+    if (!state.isConnected || !state.currentAccount || !state.provider || !state.contracts.myNFT) {
+      console.log("❌ No se puede cargar NFTs - faltan datos de conexión");
+      return;
+    }
+
+    await loadUserNFTsInternal(state.provider, state.currentAccount, state.contracts, forceReload);
+  }, [state.isConnected, state.currentAccount, state.provider, state.contracts, addLog]);
+
+  const addHardhatNetwork = useCallback(async () => {
+    if (!window.ethereum) {
+      alert("No tienes MetaMask instalado.");
+      return;
+    }
+    try {
+      await window.ethereum.request({
+        method: 'wallet_addEthereumChain',
+        params: [{
+          chainId: '0x7A69',
+          chainName: 'Hardhat Localhost',
+          nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+          rpcUrls: ['http://127.0.0.1:8545'],
+          blockExplorerUrls: []
+        }]
+      });
+      addLog("✅ Red Hardhat añadida a MetaMask.", 'success');
+    } catch (error) {
+      addLog("❌ Error añadiendo red: " + error.message, 'error');
+    }
+  }, [addLog]);
 
   const mintNFT = useCallback(async (formData) => {
     if (!state.isConnected) {
@@ -261,14 +310,12 @@ export const useBlockchain = () => {
 
       addLog(`⏳ Subiendo metadatos a IPFS...`, 'info');
 
-      // ✅ ESTRUCTURA CORREGIDA DE METADATA
       const metadata = {
         name: formData.name,
         description: formData.description,
         image: imageUrl,
-        // Propiedades adicionales estándar
-        external_url: "", // URL de tu sitio si tienes
-        // ✅ Atributos estructurados correctamente
+        external_url: "",
+      
         attributes: [
           {
             trait_type: "Rarity",
@@ -281,16 +328,17 @@ export const useBlockchain = () => {
           {
             trait_type: "Listing Price",
             value: formData.price,
-            display_type: "number" // Para mostrar como número
+            display_type: "number"
           },
           {
             trait_type: "Creation Date",
-            value: Math.floor(Date.now() / 1000), // Unix timestamp
+            value: Math.floor(Date.now() / 1000),
             display_type: "date"
           }
         ]
       };
 
+      console.log("📦 Metadata a subir:", JSON.stringify(metadata, null, 2));
       const metadataCID = await uploadMetadataToPinata(metadata);
 
       if (!metadataCID || metadataCID.length < 10) {
@@ -300,7 +348,6 @@ export const useBlockchain = () => {
       const tokenURI = `ipfs://${metadataCID}`;
       addLog(`✅ Metadata subida: ${tokenURI}`, 'success');
 
-      // Verificar que la metadata esté disponible
       const response = await fetch(`https://gateway.pinata.cloud/ipfs/${metadataCID}`);
       if (!response.ok) {
         throw new Error("La metadata no está disponible públicamente en IPFS.");
@@ -313,11 +360,14 @@ export const useBlockchain = () => {
 
       addLog(`🎉 NFT '${formData.name}' minteado exitosamente!`, 'success');
 
-      // Forzar recarga después del mint
-      loadUserNFTs(true);
+      // Recargar NFTs después del mint
+      setTimeout(() => {
+        loadUserNFTs(true);
+      }, 2000);
+
     } catch (error) {
       addLog(`❌ Error minteando NFT: ${error.message}`, 'error');
-      throw error; // Re-lanzar el error para que el componente lo maneje
+      throw error;
     }
   }, [state.isConnected, state.currentAccount, state.contracts.myNFT, addLog, loadUserNFTs]);
 
@@ -338,13 +388,13 @@ export const useBlockchain = () => {
           tokenId: tokenId.toString(),
           name: metadata.name,
           description: metadata.description,
-          image: metadata.image,
+          image: convertIpfsUriToHttp(metadata.image),
           price: ethers.formatUnits(item.price, 18),
           seller: item.seller,
           status: item.isListed ? 'Disponible' : 'No disponible'
         };
       }));
-
+      
       setMarketplaceNFTs(listedItems);
       addLog(`✅ Marketplace cargado con ${listedItems.length} NFTs listados.`, 'success');
 
@@ -362,6 +412,41 @@ export const useBlockchain = () => {
     }
 
     try {
+      addLog(`⏳ Verificando aprobaciones para NFT ID ${tokenId}...`, "info");
+
+      // Verificar si el marketplace ya está aprobado para todos los tokens
+      const isApprovedForAll = await state.contracts.myNFT.isApprovedForAll(
+        state.currentAccount,
+        CONTRACTS.MARKETPLACE_ADDRESS
+      );
+
+      // Verificar si el token específico ya está aprobado
+      const approvedAddress = await state.contracts.myNFT.getApproved(tokenId);
+      const isTokenApproved = approvedAddress.toLowerCase() === CONTRACTS.MARKETPLACE_ADDRESS.toLowerCase();
+
+      // Si no está aprobado de ninguna manera, hacer ambas aprobaciones
+      if (!isApprovedForAll && !isTokenApproved) {
+        addLog("🔐 Aprobando Marketplace para transferir tus NFTs...", "info");
+        
+        // Primero aprobar el token específico
+        const approveTx = await state.contracts.myNFT.approve(CONTRACTS.MARKETPLACE_ADDRESS, tokenId);
+        await approveTx.wait();
+        addLog("✅ NFT específico aprobado.", "success");
+
+        // Luego aprobar para todos (opcional pero recomendado para futuros listados)
+        const approveAllTx = await state.contracts.myNFT.setApprovalForAll(CONTRACTS.MARKETPLACE_ADDRESS, true);
+        await approveAllTx.wait();
+        addLog("✅ Marketplace aprobado para todos los NFTs.", "success");
+      } else if (!isTokenApproved) {
+        // Si solo falta la aprobación del token específico
+        addLog("🔐 Aprobando NFT específico para el Marketplace...", "info");
+        const approveTx = await state.contracts.myNFT.approve(CONTRACTS.MARKETPLACE_ADDRESS, tokenId);
+        await approveTx.wait();
+        addLog("✅ NFT específico aprobado.", "success");
+      } else {
+        addLog("✅ NFT ya está aprobado para el Marketplace.", "success");
+      }
+
       addLog(`⏳ Listando NFT ID ${tokenId} por ${price} MTK...`, "info");
 
       const priceParsed = ethers.parseUnits(price.toString(), 18);
@@ -375,8 +460,9 @@ export const useBlockchain = () => {
 
     } catch (error) {
       addLog(`❌ Error listando NFT: ${error.message}`, "error");
+      console.error("Error detallado:", error);
     }
-  }, [state.isConnected, state.contracts.marketplace, addLog, loadUserNFTs, loadMarketplaceNFTs]);
+  }, [state.isConnected, state.contracts.marketplace, state.contracts.myNFT, state.currentAccount, addLog, loadUserNFTs, loadMarketplaceNFTs]);
 
   const cancelListing = useCallback(async (tokenId) => {
     if (!state.contracts.marketplace) {
@@ -431,9 +517,11 @@ export const useBlockchain = () => {
       addLog("⏳ Intentando listar todos los NFTs no listados...", 'info');
 
       const balance = await state.contracts.myNFT.balanceOf(state.currentAccount);
+      
       for (let i = 0; i < balance; i++) {
         const tokenId = await state.contracts.myNFT.tokenOfOwnerByIndex(state.currentAccount, i);
 
+        // Aprobar el token específico
         const approveTx = await state.contracts.myNFT.approve(CONTRACTS.MARKETPLACE_ADDRESS, tokenId);
         await approveTx.wait();
 
@@ -452,29 +540,35 @@ export const useBlockchain = () => {
     }
   }, [state.contracts.myNFT, state.contracts.marketplace, state.currentAccount, addLog, loadUserNFTs, loadMarketplaceNFTs]);
 
-  // ✅ ARREGLADO: Solo cargar cuando se conecta, una sola vez
+  const disconnectWallet = useCallback(() => {
+    setState({
+      isConnected: false,
+      currentAccount: null,
+      mtkBalance: '0.00',
+      provider: null,
+      signer: null,
+      contracts: {}
+    });
+
+    setUserNFTs([]);
+    setMarketplaceNFTs([]);
+    setLogs([]);
+    loadingRef.current = false;
+    addLog("🚪 Sesión cerrada. Se desconectó la wallet.", 'info');
+  }, [addLog]);
+  
+
+  // Log del estado actual para debugging
   useEffect(() => {
-    if (state.isConnected && state.provider && state.currentAccount && !hasLoadedUserNFTs.current) {
-      loadUserNFTs(false);
-    }
-  }, [state.isConnected, state.provider, state.currentAccount]); // Removido loadUserNFTs de las dependencias
-
-  const disconnectWallet = () => {
-  setState({
-    isConnected: false,
-    currentAccount: null,
-    mtkBalance: '0.00',
-    provider: null,
-    signer: null,
-    contracts: {}
-  });
-
-  setUserNFTs([]);
-  setMarketplaceNFTs([]);
-  setLogs([]);
-  hasLoadedUserNFTs.current = false;
-  addLog("🚪 Sesión cerrada. Se desconectó la wallet.", 'info');
-};
+    console.log("🔍 Estado actual del blockchain:", {
+      isConnected: state.isConnected,
+      currentAccount: state.currentAccount,
+      userNFTsCount: userNFTs.length,
+      hasProvider: !!state.provider,
+      hasContracts: !!state.contracts.myNFT,
+      isLoadingUser
+    });
+  }, [state.isConnected, state.currentAccount, userNFTs.length, state.provider, state.contracts.myNFT, isLoadingUser]);
 
   return {
     ...state,
