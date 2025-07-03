@@ -75,7 +75,7 @@ const App = () => {
             />
           } />
 
-          <Route path='/activity' element={
+          <Route path='/account' element={
             <WalletInfo 
               account={blockchain.currentAccount} 
               mtkBalance={blockchain.mtkBalance}

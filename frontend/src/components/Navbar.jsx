@@ -37,18 +37,8 @@ const Navbar = ({ currentAccount, onLogout }) => {
             </h1>
           </div>
 
-          {/* Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
-            <Link to="/marketplace" className="text-white hover:text-purple-300 transition-colors">
-              Explorar
-            </Link>
-            <Link to="/collection" className="text-gray-300 hover:text-white transition-colors">
-              Mis Colecciones
-            </Link>
-            <Link to="/activity" className="text-gray-300 hover:text-white transition-colors">
-              Actividad
-            </Link>
-          </nav>
+          
+          
 
           {/* User Actions */}
           <div className="flex items-center space-x-2 sm:space-x-4">
@@ -56,15 +46,17 @@ const Navbar = ({ currentAccount, onLogout }) => {
               <Bell className="w-5 h-5" />
             </button>
 
-            <Link to="/account" className="p-2 hover:bg-white/10 rounded-xl transition-colors">
+            <Link to="/collection" className="p-2 hover:bg-white/10 rounded-xl transition-colors">
               <User className="w-5 h-5" />
             </Link>
 
             {currentAccount && (
-              <div className="hidden sm:flex items-center space-x-2 bg-white/10 rounded-xl px-3 py-2">
-                <Wallet className="w-4 h-4 text-green-400" />
-                <span className="text-sm font-mono">{formatAddress(currentAccount)}</span>
-              </div>
+              <Link to={'/account'} className='items-center flex gap-1'>
+                <div className="hidden sm:flex items-center space-x-2 bg-white/10 rounded-xl px-3 py-2">
+                  <Wallet className="w-4 h-4 text-green-400" />
+                  <span className="text-sm font-mono">{formatAddress(currentAccount)}</span>
+                </div>
+              </Link>
             )}
 
             <button
