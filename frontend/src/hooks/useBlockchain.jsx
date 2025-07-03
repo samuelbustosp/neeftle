@@ -459,6 +459,23 @@ export const useBlockchain = () => {
     }
   }, [state.isConnected, state.provider, state.currentAccount]); // Removido loadUserNFTs de las dependencias
 
+  const disconnectWallet = () => {
+  setState({
+    isConnected: false,
+    currentAccount: null,
+    mtkBalance: '0.00',
+    provider: null,
+    signer: null,
+    contracts: {}
+  });
+
+  setUserNFTs([]);
+  setMarketplaceNFTs([]);
+  setLogs([]);
+  hasLoadedUserNFTs.current = false;
+  addLog("🚪 Sesión cerrada. Se desconectó la wallet.", 'info');
+};
+
   return {
     ...state,
     logs,
@@ -474,6 +491,7 @@ export const useBlockchain = () => {
     listNFT,
     cancelListing,
     buyNFT,
-    listAllUserNFTs
+    listAllUserNFTs,
+    disconnectWallet
   };
 };

@@ -12,14 +12,10 @@ const WalletConnection = ({
   const [isConnecting, setIsConnecting] = useState(false);
   const navigate = useNavigate();
 
-  // Redirect to marketplace when connected
+  // Redirect to marketplace immediately when connected
   useEffect(() => {
     if (isConnected) {
-      const timer = setTimeout(() => {
-        navigate('/marketplace');
-      }, 1000); // Wait 2 seconds to show success message
-      
-      return () => clearTimeout(timer);
+      navigate('/marketplace');
     }
   }, [isConnected, navigate]);
 
@@ -68,7 +64,7 @@ const WalletConnection = ({
             </div>
           </div>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent mb-2">
-            Neefte
+            Neeftle
           </h1>
           <p className="text-gray-400 text-base sm:text-lg">El futuro de los NFTs</p>
         </div>
@@ -76,41 +72,15 @@ const WalletConnection = ({
         {/* Main Card */}
         <div className="bg-white/5 backdrop-blur-xl rounded-2xl sm:rounded-3xl p-6 sm:p-8 border border-white/10 shadow-2xl">
           
-          {/* Connection Status */}
-          {isConnected ? (
-            <div className="text-center mb-6 sm:mb-8">
-              <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-3">
-                ¡Conectado exitosamente!
-              </h2>
-              <div className="space-y-2 text-left">
-                <p className="text-gray-300">
-                  Estado: <span className="font-semibold text-green-400">Conectado</span>
-                </p>
-                <p className="text-gray-300">
-                  Cuenta: <span className="text-blue-300 font-mono text-xs sm:text-sm break-all">
-                    {currentAccount}
-                  </span>
-                </p>
-                <p className="text-gray-300">
-                  Balance MTK: <span className="text-green-400 font-semibold">{mtkBalance}</span>
-                </p>
-              </div>
-              <div className="mt-4 p-3 bg-green-500/20 border border-green-500/30 rounded-lg">
-                <p className="text-green-300 text-sm">
-                  Redirigiendo al marketplace en unos segundos...
-                </p>
-              </div>
-            </div>
-          ) : (
-            <div className="text-center mb-6 sm:mb-8">
-              <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-3">
-                Conecta tu Wallet
-              </h2>
-              <p className="text-gray-300 text-sm sm:text-base leading-relaxed">
-                Descubre, colecciona y comercia NFTs únicos en el marketplace más innovador
-              </p>
-            </div>
-          )}
+          {/* Connection Interface */}
+          <div className="text-center mb-6 sm:mb-8">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-3">
+              Conecta tu Wallet
+            </h2>
+            <p className="text-gray-300 text-sm sm:text-base leading-relaxed">
+              Descubre, colecciona y comercia NFTs únicos en el marketplace más innovador
+            </p>
+          </div>
 
           {/* Features */}
           <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
@@ -137,15 +107,15 @@ const WalletConnection = ({
           {/* Connect Button */}
           <button
             onClick={handleConnect}
-            disabled={isConnecting || isConnected}
+            disabled={isConnecting}
             className={`w-full font-semibold py-3 sm:py-4 px-4 sm:px-6 rounded-xl sm:rounded-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl disabled:scale-100 disabled:cursor-not-allowed flex items-center justify-center space-x-2 sm:space-x-3 group relative overflow-hidden text-sm sm:text-base ${
-              isConnected 
-                ? 'bg-green-600 text-white cursor-not-allowed' 
-                : 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 disabled:from-gray-600 disabled:to-gray-700 text-white'
+              isConnecting 
+                ? 'bg-gradient-to-r from-gray-600 to-gray-700 text-white cursor-not-allowed' 
+                : 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white'
             }`}
           >
             {/* Button shine effect */}
-            {!isConnected && (
+            {!isConnecting && (
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
             )}
             
@@ -153,11 +123,6 @@ const WalletConnection = ({
               <>
                 <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                 <span>Conectando...</span>
-              </>
-            ) : isConnected ? (
-              <>
-                <div className="w-4 h-4 sm:w-5 sm:h-5 bg-green-300 rounded-full"></div>
-                <span>Conectado</span>
               </>
             ) : (
               <>
@@ -169,37 +134,33 @@ const WalletConnection = ({
           </button>
 
           {/* Add Network Button */}
-          {!isConnected && (
-            <button
-              onClick={handleAddNetwork}
-              className="w-full mt-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg sm:rounded-xl transition-colors text-xs sm:text-sm"
-            >
-              Añadir Red Hardhat
-            </button>
-          )}
+          <button
+            onClick={handleAddNetwork}
+            className="w-full mt-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg sm:rounded-xl transition-colors text-xs sm:text-sm"
+          >
+            Añadir Red Hardhat
+          </button>
 
           {/* Alternative options */}
-          {!isConnected && (
-            <div className="mt-4 sm:mt-6 text-center">
-              <p className="text-gray-400 text-xs sm:text-sm mb-3 sm:mb-4">¿No tienes MetaMask?</p>
-              <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
-                <a 
-                  href="https://metamask.io/download/" 
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex-1 bg-white/5 hover:bg-white/10 text-gray-300 py-2 sm:py-3 px-3 sm:px-4 rounded-lg sm:rounded-xl transition-colors border border-white/10 text-xs sm:text-sm text-center"
-                >
-                  Descargar
-                </a>
-                <button 
-                  onClick={() => alert('Sección de ayuda en desarrollo')}
-                  className="flex-1 bg-white/5 hover:bg-white/10 text-gray-300 py-2 sm:py-3 px-3 sm:px-4 rounded-lg sm:rounded-xl transition-colors border border-white/10 text-xs sm:text-sm"
-                >
-                  Ayuda
-                </button>
-              </div>
+          <div className="mt-4 sm:mt-6 text-center">
+            <p className="text-gray-400 text-xs sm:text-sm mb-3 sm:mb-4">¿No tienes MetaMask?</p>
+            <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
+              <a 
+                href="https://metamask.io/download/" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 bg-white/5 hover:bg-white/10 text-gray-300 py-2 sm:py-3 px-3 sm:px-4 rounded-lg sm:rounded-xl transition-colors border border-white/10 text-xs sm:text-sm text-center"
+              >
+                Descargar
+              </a>
+              <button 
+                onClick={() => alert('Sección de ayuda en desarrollo')}
+                className="flex-1 bg-white/5 hover:bg-white/10 text-gray-300 py-2 sm:py-3 px-3 sm:px-4 rounded-lg sm:rounded-xl transition-colors border border-white/10 text-xs sm:text-sm"
+              >
+                Ayuda
+              </button>
             </div>
-          )}
+          </div>
         </div>
 
         {/* Footer */}
