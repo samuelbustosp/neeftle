@@ -7,6 +7,8 @@ import Marketplace from './components/MarketPlace';
 import LogDisplay from './components/LogDisplay';
 import { useBlockchain } from './hooks/useBlockchain';
 import PrivateLayout from './components/PrivateLayout';
+import Activity from './components/Activity';
+import WalletInfo from './components/WalletInfo';
 
 const App = () => {
   const blockchain = useBlockchain();
@@ -43,6 +45,7 @@ const App = () => {
               currentAccount={blockchain.currentAccount}
               onLogout={blockchain.disconnectWallet}
               logs={blockchain.logs}
+              mtkBalance={blockchain.mtkBalance}
             />
           }
         >
@@ -71,6 +74,14 @@ const App = () => {
                onBurnNFT={blockchain.burnNFT}
             />
           } />
+
+          <Route path='/activity' element={
+            <WalletInfo 
+              account={blockchain.currentAccount} 
+              mtkBalance={blockchain.mtkBalance}
+              activityLogs={blockchain.activityLogs}
+            />
+          }/>
         </Route>
       )}
       </Routes>

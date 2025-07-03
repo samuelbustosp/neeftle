@@ -13,10 +13,12 @@ import {
   TrendingUp,
   Zap,
   DollarSign,
-  Eye
+  Eye,
+  Plus
 } from 'lucide-react';
 import NFTCard from './NFTCard';
-import LogDisplay from './LogDisplay';
+import { Link } from 'react-router-dom';
+
 
 const UserNFTCollection = ({ 
   userNFTs = [], 
@@ -83,21 +85,16 @@ const UserNFTCollection = ({
           </div>
           
           <div className="flex flex-col sm:flex-row gap-2">
-            {userNFTs.length > 0 && (
-              <button
-                onClick={onListAllNFTs}
-                disabled={isLoading}
-                className="flex items-center space-x-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 disabled:bg-gray-700 text-white px-4 py-2 rounded-xl transition-all duration-300"
-              >
-                <Sparkles className="w-4 h-4" />
-                <span>Listar Todos</span>
-              </button>
-            )}
+            <Link to={'/mint'} className="flex items-center space-x-2 border border-purple-700 hover:bg-purple-700 disabled:bg-purple-800 text-white px-4 py-2 rounded-xl transition-colors"
+            >
+              <Plus className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`}/>
+              <span>Crear NFT</span>
+            </Link>
             
             <button
               onClick={() => window.location.reload()}
               disabled={isLoading}
-              className="flex items-center space-x-2 bg-purple-600 hover:bg-purple-700 disabled:bg-purple-800 text-white px-4 py-2 rounded-xl transition-colors"
+              className="flex items-center space-x-2 bg-purple-600 hover:bg-purple-700 disabled:bg-purple-800 text-white px-4 py-2 rounded-xl transition-colors cursor-pointer"
             >
               <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
               <span>Recargar</span>
@@ -319,13 +316,13 @@ const UserNFTCollection = ({
                       </div>
                       <button 
                         onClick={() => nft.isListed ? onCancelListing(nft) : onListNFT(nft)}
-                        className={`w-full sm:w-auto font-semibold py-2 px-6 rounded-xl transition-all duration-300 ${
+                        className={`w-full sm:w-auto font-semibold py-2 px-6 rounded-xl transition-all duration-300 cursor-pointer ${
                           nft.isListed 
                             ? 'bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white'
                             : 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white'
                         }`}
                       >
-                        {nft.isListed ? 'Cancelar Venta' : 'Listar para Venta'}
+                        {nft.isListed ? 'Cancelar' : 'Listar'}
                       </button>
                     </div>
                   </div>

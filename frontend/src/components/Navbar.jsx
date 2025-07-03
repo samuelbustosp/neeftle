@@ -1,11 +1,10 @@
-import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
-  Sparkles,
   Bell,
   User,
   Wallet,
-  LogOut
+  LogOut,
+  Bird
 } from 'lucide-react';
 
 const Navbar = ({ currentAccount, onLogout }) => {
@@ -31,10 +30,10 @@ const Navbar = ({ currentAccount, onLogout }) => {
             onClick={() => navigate('/marketplace')}
           >
             <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
-              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+              <Bird className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
             <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
-              Neefte
+              Neeftle
             </h1>
           </div>
 
@@ -48,9 +47,6 @@ const Navbar = ({ currentAccount, onLogout }) => {
             </Link>
             <Link to="/activity" className="text-gray-300 hover:text-white transition-colors">
               Actividad
-            </Link>
-            <Link to="/mint" className="text-gray-300 hover:text-white transition-colors">
-              Crear
             </Link>
           </nav>
 

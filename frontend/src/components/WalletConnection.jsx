@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Wallet, Sparkles, Zap, Shield, ChevronRight } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Wallet, Sparkles, Zap, Shield, ChevronRight, Bird } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const WalletConnection = ({ 
@@ -58,7 +58,7 @@ const WalletConnection = ({
         {/* Logo and Brand */}
         <div className="text-center mb-8 sm:mb-12">
           <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl mb-4 sm:mb-6 shadow-2xl relative">
-            <Sparkles className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
+            <Bird className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
             <div className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 w-4 h-4 sm:w-6 sm:h-6 bg-yellow-400 rounded-full flex items-center justify-center">
               <Zap className="w-2 h-2 sm:w-3 sm:h-3 text-yellow-900" />
             </div>

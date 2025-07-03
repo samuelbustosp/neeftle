@@ -21,6 +21,7 @@ import {
   X
 } from 'lucide-react';
 import NFTCard from './NFTCard';
+import WalletInfo from './WalletInfo';
 
 
 const Marketplace = ({ 
@@ -64,7 +65,7 @@ const Marketplace = ({
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
-
+      
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {/* Header Section */}
@@ -268,7 +269,7 @@ const Marketplace = ({
                         </div>
                         <button 
                           onClick={() => isOwner ? onCancelListing(nft) : onBuyNFT(nft)}
-                          className={`w-full sm:w-auto font-semibold py-2 px-6 rounded-xl transition-all duration-300 ${
+                          className={`w-full cursor-pointer sm:w-auto font-semibold py-2 px-6 rounded-xl transition-all duration-300 ${
                             isOwner 
                               ? 'bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white'
                               : 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white'
