@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Plus, X, Upload, Palette, Tag, DollarSign, FileText, Star } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const MintNFT = ({ onMintNFT, isConnected }) => {
   const [showForm, setShowForm] = useState(false);
@@ -12,6 +13,7 @@ const MintNFT = ({ onMintNFT, isConnected }) => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
+  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     const { name, type, value, files } = e.target;
@@ -59,7 +61,7 @@ const MintNFT = ({ onMintNFT, isConnected }) => {
         rarity: 'Common'
       });
       setImagePreview(null);
-      setShowForm(false);
+      navigate('/collection')
     } catch (error) {
       console.error('Error minting NFT:', error);
     } finally {
@@ -83,27 +85,7 @@ const MintNFT = ({ onMintNFT, isConnected }) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
-          <div>
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-2">
-              Crear NFT
-            </h2>
-            <p className="text-gray-400">
-              Mintea tu obra de arte digital única
-            </p>
-          </div>
-          
-          <button
-            onClick={() => setShowForm(!showForm)}
-            className="flex items-center space-x-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-6 py-3 rounded-xl transition-all duration-300 font-semibold"
-          >
-            {showForm ? <X className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
-            <span>{showForm ? 'Ocultar Formulario' : 'Mostrar Formulario'}</span>
-          </button>
-        </div>
-
-        {showForm && (
+        
           <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 sm:p-8 border border-white/10">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -163,6 +145,7 @@ const MintNFT = ({ onMintNFT, isConnected }) => {
                       <option value="Rare" className="bg-slate-800">Raro</option>
                       <option value="Epic" className="bg-slate-800">Épico</option>
                       <option value="Legendary" className="bg-slate-800">Legendario</option>
+                      
                     </select>
                     <div className="mt-2">
                       <div className={`inline-block px-3 py-1 rounded-full text-xs font-medium bg-gradient-to-r ${getRarityColor(formData.rarity)} text-white`}>
@@ -267,7 +250,7 @@ const MintNFT = ({ onMintNFT, isConnected }) => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="flex-1 flex items-center justify-center space-x-2 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 disabled:from-gray-600 disabled:to-gray-700 text-white rounded-xl font-semibold transition-all duration-300"
+                  className="flex-1 flex cursor-pointer items-center justify-center space-x-2 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 disabled:from-gray-600 disabled:to-gray-700 text-white rounded-xl font-semibold transition-all duration-300"
                 >
                   {isSubmitting ? (
                     <>
@@ -284,14 +267,13 @@ const MintNFT = ({ onMintNFT, isConnected }) => {
                 <button
                   type="button"
                   onClick={() => setShowForm(false)}
-                  className="px-8 py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl font-semibold transition-all duration-300"
+                  className="px-8 cursor-pointer py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl font-semibold transition-all duration-300"
                 >
                   Cancelar
                 </button>
               </div>
             </form>
           </div>
-        )}
       </div>
     </div>
   );

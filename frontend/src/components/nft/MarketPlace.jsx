@@ -25,13 +25,11 @@ const Marketplace = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [viewMode, setViewMode] = useState('grid');
-  const [likedNFTs, setLikedNFTs] = useState(new Set());
   const [selectedNFT, setSelectedNFT] = useState(null);
   const [showDetail, setShowDetail] = useState(false);
-  
-  console.log('marketplaceNFTs',marketplaceNFTs)
 
-  const categories = ['All', 'Art', 'Digital', 'Photography', 'Abstract', 'Character', 'Space'];
+
+  const categories = ['Todos', 'Legendario','Épico','Raro','Poco común', 'Común'];
 
   const filteredNFTs = marketplaceNFTs.filter(nft => {
     const matchesSearch = nft.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -104,7 +102,7 @@ const Marketplace = ({
           <button
             onClick={onLoadMarketplace}
             disabled={isLoading}
-            className="flex items-center space-x-2 lg:space-x-3 4xl:space-x-4 bg-purple-600 hover:bg-purple-700 disabled:bg-purple-800 text-white px-4 py-2 lg:px-6 lg:py-3 xl:px-8 xl:py-4 2xl:px-10 2xl:py-5 4xl:px-12 4xl:py-6 rounded-xl lg:rounded-2xl transition-colors text-sm lg:text-base xl:text-lg 2xl:text-xl 4xl:text-2xl"
+            className="flex cursor-pointer items-center space-x-2 lg:space-x-3 4xl:space-x-4 bg-purple-600 hover:bg-purple-700 disabled:bg-purple-800 text-white px-4 py-2 lg:px-6 lg:py-3 xl:px-8 xl:py-4 2xl:px-10 2xl:py-5 4xl:px-12 4xl:py-6 rounded-xl lg:rounded-2xl transition-colors text-sm lg:text-base xl:text-lg 2xl:text-xl 4xl:text-2xl"
           >
             <RefreshCw className={`w-4 h-4 lg:w-5 lg:h-5 xl:w-6 xl:h-6 2xl:w-7 2xl:h-7 4xl:w-8 4xl:h-8 ${isLoading ? 'animate-spin' : ''}`} />
             <span>Recargar</span>
@@ -131,7 +129,7 @@ const Marketplace = ({
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl lg:rounded-2xl px-4 lg:px-6 xl:px-8 py-2 sm:py-3 lg:py-4 xl:py-5 2xl:py-6 4xl:py-7 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm lg:text-base xl:text-lg 2xl:text-xl 4xl:text-2xl min-w-[140px] lg:min-w-[180px] xl:min-w-[220px] 2xl:min-w-[260px] 4xl:min-w-[300px]"
+              className="bg-white/5 cursor-pointer backdrop-blur-xl border border-white/10 rounded-xl lg:rounded-2xl px-4 lg:px-6 xl:px-8 py-2 sm:py-3 lg:py-4 xl:py-5 2xl:py-6 4xl:py-7 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm lg:text-base xl:text-lg 2xl:text-xl 4xl:text-2xl min-w-[140px] lg:min-w-[180px] xl:min-w-[220px] 2xl:min-w-[260px] 4xl:min-w-[300px]"
             >
               {categories.map(category => (
                 <option key={category} value={category} className="bg-slate-800">
@@ -145,7 +143,7 @@ const Marketplace = ({
           <div className="flex items-center bg-white/5 rounded-xl lg:rounded-2xl p-1 lg:p-2">
             <button
               onClick={() => setViewMode('grid')}
-              className={`p-2 lg:p-3 xl:p-4 2xl:p-5 4xl:p-6 rounded-lg lg:rounded-xl transition-colors ${
+              className={`p-2 cursor-pointer lg:p-3 xl:p-4 2xl:p-5 4xl:p-6 rounded-lg lg:rounded-xl transition-colors ${
                 viewMode === 'grid' ? 'bg-purple-500 text-white' : 'text-gray-400 hover:text-white'
               }`}
             >
@@ -153,7 +151,7 @@ const Marketplace = ({
             </button>
             <button
               onClick={() => setViewMode('list')}
-              className={`p-2 lg:p-3 xl:p-4 2xl:p-5 4xl:p-6 rounded-lg lg:rounded-xl transition-colors ${
+              className={`p-2 cursor-pointer lg:p-3 xl:p-4 2xl:p-5 4xl:p-6 rounded-lg lg:rounded-xl transition-colors ${
                 viewMode === 'list' ? 'bg-purple-500 text-white' : 'text-gray-400 hover:text-white'
               }`}
             >
@@ -297,13 +295,13 @@ const Marketplace = ({
                         <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                           <button
                             onClick={() => handleViewDetail(nft.tokenId)}
-                            className="w-full sm:w-auto font-semibold py-2 px-4 lg:py-3 lg:px-6 xl:py-4 xl:px-8 2xl:py-5 2xl:px-10 4xl:py-6 4xl:px-12 rounded-xl lg:rounded-2xl bg-gradient-to-r from-purple-600/20 to-pink-600/20 hover:from-purple-600/30 hover:to-pink-600/30 text-purple-300 border border-purple-500/30 transition-all duration-300 text-sm lg:text-base xl:text-lg 2xl:text-xl 4xl:text-2xl"
+                            className="w-full cursor-pointer sm:w-auto font-semibold py-2 px-4 lg:py-3 lg:px-6 xl:py-4 xl:px-8 2xl:py-5 2xl:px-10 4xl:py-6 4xl:px-12 rounded-xl lg:rounded-2xl bg-gradient-to-r from-purple-600/20 to-pink-600/20 hover:from-purple-600/30 hover:to-pink-600/30 text-purple-300 border border-purple-500/30 transition-all duration-300 text-sm lg:text-base xl:text-lg 2xl:text-xl 4xl:text-2xl"
                           >
                             Ver Detalle
                           </button>
                           <button 
                             onClick={() => isOwner ? onCancelListing(nft) : onBuyNFT(nft)}
-                            className={`w-full sm:w-auto font-semibold py-2 px-6 lg:py-3 lg:px-8 xl:py-4 xl:px-10 2xl:py-5 2xl:px-12 4xl:py-6 4xl:px-16 rounded-xl lg:rounded-2xl transition-all duration-300 text-sm lg:text-base xl:text-lg 2xl:text-xl 4xl:text-2xl ${
+                            className={`w-full cursor-pointer sm:w-auto font-semibold py-2 px-6 lg:py-3 lg:px-8 xl:py-4 xl:px-10 2xl:py-5 2xl:px-12 4xl:py-6 4xl:px-16 rounded-xl lg:rounded-2xl transition-all duration-300 text-sm lg:text-base xl:text-lg 2xl:text-xl 4xl:text-2xl ${
                               isOwner 
                                 ? 'bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white'
                                 : 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white'

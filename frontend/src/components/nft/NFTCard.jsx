@@ -17,7 +17,7 @@ const NFTCard = ({ nft, onAction, actionType, isOwner, onViewDetail }) => {
         return (
           <button
             onClick={() => onAction(nft.tokenId, nft.price)}
-            className="w-full py-3 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2"
+            className="w-full cursor-pointer py-3 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2"
           >
             <Tag className="w-4 h-4" />
             <span>Listar por {nft.price} MTK</span>
@@ -27,7 +27,7 @@ const NFTCard = ({ nft, onAction, actionType, isOwner, onViewDetail }) => {
         return (
           <button
             onClick={() => onAction(nft.tokenId)}
-            className="w-full py-3 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2"
+            className="w-full cursor-pointer py-3 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2"
           >
             <X className="w-4 h-4" />
             <span>Cancelar Listado</span>
@@ -37,7 +37,7 @@ const NFTCard = ({ nft, onAction, actionType, isOwner, onViewDetail }) => {
         return (
           <button
             onClick={() => onAction(nft.tokenId, nft.price)}
-            className={`w-full py-3 text-white rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2 ${
+            className={`w-full py-3 cursor-pointer text-white rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2 ${
               isOwner 
                 ? 'bg-gradient-to-r from-gray-500 to-gray-600 cursor-not-allowed' 
                 : 'bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600'
@@ -138,7 +138,7 @@ const NFTCard = ({ nft, onAction, actionType, isOwner, onViewDetail }) => {
         {/* Ver Detalle Button */}
         <button
           onClick={handleViewDetail}
-          className="w-full py-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 hover:from-purple-500/30 hover:to-pink-500/30 text-purple-300 border border-purple-500/30 rounded-xl font-medium transition-all duration-200 flex items-center justify-center space-x-2"
+          className="w-full cursor-pointer py-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 hover:from-purple-500/30 hover:to-pink-500/30 text-purple-300 border border-purple-500/30 rounded-xl font-medium transition-all duration-200 flex items-center justify-center space-x-2"
         >
           <Eye className="w-4 h-4" />
           <span>Ver Detalle</span>

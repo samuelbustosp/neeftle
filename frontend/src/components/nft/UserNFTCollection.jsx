@@ -30,7 +30,7 @@ const UserNFTCollection = ({
   console.log("userNFTs =>", userNFTs);
 
 
-  const categories = ['All', 'Art', 'Digital', 'Photography', 'Abstract', 'Character', 'Space'];
+  const categories = ['Todos', 'Legendario','Épico','Raro','Poco común', 'Común'];
   const statusOptions = ['All', 'Listed', 'Not Listed'];
 
   const filteredNFTs = userNFTs.filter(nft => {
@@ -150,7 +150,7 @@ const UserNFTCollection = ({
           <div className="flex items-center bg-white/5 rounded-xl lg:rounded-2xl p-1 lg:p-2">
             <button
               onClick={() => setViewMode('grid')}
-              className={`p-2 lg:p-3 xl:p-4 2xl:p-5 4xl:p-6 rounded-lg lg:rounded-xl transition-colors ${
+              className={`p-2 cursor-pointer lg:p-3 xl:p-4 2xl:p-5 4xl:p-6 rounded-lg lg:rounded-xl transition-colors ${
                 viewMode === 'grid' ? 'bg-purple-500 text-white' : 'text-gray-400 hover:text-white'
               }`}
             >
@@ -158,7 +158,7 @@ const UserNFTCollection = ({
             </button>
             <button
               onClick={() => setViewMode('list')}
-              className={`p-2 lg:p-3 xl:p-4 2xl:p-5 4xl:p-6 rounded-lg lg:rounded-xl transition-colors ${
+              className={`p-2 cursor-pointer lg:p-3 xl:p-4 2xl:p-5 4xl:p-6 rounded-lg lg:rounded-xl transition-colors ${
                 viewMode === 'list' ? 'bg-purple-500 text-white' : 'text-gray-400 hover:text-white'
               }`}
             >

@@ -108,7 +108,7 @@ const WalletConnection = ({
           <button
             onClick={handleConnect}
             disabled={isConnecting}
-            className={`w-full font-semibold py-3 sm:py-4 px-4 sm:px-6 rounded-xl sm:rounded-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl disabled:scale-100 disabled:cursor-not-allowed flex items-center justify-center space-x-2 sm:space-x-3 group relative overflow-hidden text-sm sm:text-base ${
+            className={`w-full cursor-pointer font-semibold py-3 sm:py-4 px-4 sm:px-6 rounded-xl sm:rounded-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl disabled:scale-100 disabled:cursor-not-allowed flex items-center justify-center space-x-2 sm:space-x-3 group relative overflow-hidden text-sm sm:text-base ${
               isConnecting 
                 ? 'bg-gradient-to-r from-gray-600 to-gray-700 text-white cursor-not-allowed' 
                 : 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white'
@@ -136,7 +136,7 @@ const WalletConnection = ({
           {/* Add Network Button */}
           <button
             onClick={handleAddNetwork}
-            className="w-full mt-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg sm:rounded-xl transition-colors text-xs sm:text-sm"
+            className="w-full cursor-pointer mt-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg sm:rounded-xl transition-colors text-xs sm:text-sm"
           >
             Añadir Red Hardhat
           </button>

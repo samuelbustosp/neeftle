@@ -39,7 +39,7 @@ const NFTDetail = ({ nft, onBack, onAction, actionType, isOwner }) => {
         return (
           <button
             onClick={() => onAction(nft.tokenId, nft.price)}
-            className="w-full py-3 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2"
+            className="w-full py-3 cursor-pointer bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2"
           >
             <Tag className="w-4 h-4" />
             <span>Listar por {nft.price} MTK</span>
@@ -49,7 +49,7 @@ const NFTDetail = ({ nft, onBack, onAction, actionType, isOwner }) => {
         return (
           <button
             onClick={() => onAction(nft.tokenId)}
-            className="w-full py-3 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2"
+            className="w-full py-3 cursor-pointer bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2"
           >
             <X className="w-4 h-4" />
             <span>Cancelar Listado</span>
@@ -59,7 +59,7 @@ const NFTDetail = ({ nft, onBack, onAction, actionType, isOwner }) => {
         return (
           <button
             onClick={() => onAction(nft.tokenId, nft.price)}
-            className={`w-full py-3 text-white rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2 ${
+            className={`w-full py-3 cursor-pointer text-white rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2 ${
               isOwner 
                 ? 'bg-gradient-to-r from-gray-500 to-gray-600 cursor-not-allowed' 
                 : 'bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600'
@@ -108,7 +108,7 @@ const NFTDetail = ({ nft, onBack, onAction, actionType, isOwner }) => {
           <div className="flex items-center justify-between h-16">
             <button
               onClick={onBack}
-              className="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors"
+              className="flex cursor-pointer items-center space-x-2 text-gray-300 hover:text-white transition-colors"
             >
               <ArrowLeft className="w-5 h-5" />
               <span>Volver</span>
@@ -117,7 +117,7 @@ const NFTDetail = ({ nft, onBack, onAction, actionType, isOwner }) => {
             <div className="flex items-center space-x-4">
               <button
                 onClick={handleShare}
-                className="p-2 bg-white/10 hover:bg-white/20 rounded-lg transition-all duration-200"
+                className="p-2 cursor-pointer bg-white/10 hover:bg-white/20 rounded-lg transition-all duration-200"
               >
                 <Share2 className="w-5 h-5" />
               </button>
@@ -213,21 +213,7 @@ const NFTDetail = ({ nft, onBack, onAction, actionType, isOwner }) => {
               
               {/* Current Owner */}
               <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <User className="w-5 h-5 text-blue-400" />
-                    <div>
-                      <p className="text-sm text-gray-400">Propietario</p>
-                      <p className="font-mono text-sm">{nft.owner?.slice(0, 6)}...{nft.owner?.slice(-4)}</p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => handleCopyAddress(nft.owner)}
-                    className="p-2 bg-white/10 hover:bg-white/20 rounded-lg transition-all duration-200"
-                  >
-                    <Copy className="w-4 h-4" />
-                  </button>
-                </div>
+                
 
                 {/* Seller if different from owner */}
                 {nft.seller && nft.seller !== nft.owner && (
@@ -241,7 +227,7 @@ const NFTDetail = ({ nft, onBack, onAction, actionType, isOwner }) => {
                     </div>
                     <button
                       onClick={() => handleCopyAddress(nft.seller)}
-                      className="p-2 bg-white/10 hover:bg-white/20 rounded-lg transition-all duration-200"
+                      className="p-2 cursor-pointer bg-white/10 hover:bg-white/20 rounded-lg transition-all duration-200"
                     >
                       <Copy className="w-4 h-4" />
                     </button>

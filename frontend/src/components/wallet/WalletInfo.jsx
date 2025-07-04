@@ -65,7 +65,7 @@ const WalletInfo = ({ account, mtkBalance, activityLogs }) => {
             <span className="text-sm text-gray-400 font-medium">Dirección de Wallet</span>
             <button
               onClick={handleCopy}
-              className="flex items-center justify-center space-x-1 text-xs bg-purple-600 hover:bg-purple-700 px-3 py-1.5 rounded-lg transition-colors w-fit"
+              className="flex cursor-pointer items-center justify-center space-x-1 text-xs bg-purple-600 hover:bg-purple-700 px-3 py-1.5 rounded-lg transition-colors w-fit"
             >
               {copied ? (
                 <>
