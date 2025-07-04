@@ -7,7 +7,6 @@ async function main() {
     console.log("------------------------------------------");
     console.log("1. Deploying MyToken contract...");
     
-    // Define la cantidad de tokens que se acuñarán inicialmente.
     const initialSupply = ethers.parseUnits("1000000", 18); // 1 millón de tokens
 
     const MyToken = await ethers.getContractFactory("MyToken");
@@ -36,10 +35,7 @@ async function main() {
     console.log("------------------------------------------");
     console.log("3. Deploying Marketplace contract...");
 
-    // Obtenemos la fábrica del contrato Marketplace
     const Marketplace = await ethers.getContractFactory("Marketplace");
-
-    // Desplegamos el contrato, pasando las direcciones de los contratos anteriores
     const marketplace = await Marketplace.deploy(nftAddress, tokenAddress);
     await marketplace.waitForDeployment();
 
@@ -54,27 +50,9 @@ async function main() {
     console.log(`   - MyNFT:       ${nftAddress}`);
     console.log(`   - Marketplace: ${marketplaceAddress}`);
     console.log(" ");
-
-    // Opcional: Mintear un NFT de prueba y aprobar el Marketplace para transferirlo
-    const [deployer] = await ethers.getSigners();
-    console.log("------------------------------------------");
-    console.log("4. Minting a test NFT and approving the Marketplace...");
-
-    // Mint a test NFT for the deployer
-    const tokenURI = "ipfs://Qmb8Vz1y4d2zL2T3zL3Y4g5R6w7x8y9z0a1b2c3d4e5f6"; // Replace with your IPFS URI
-    const mintTx = await myNFT.safeMint(deployer.address, tokenURI);
-    await mintTx.wait();
-    console.log(`✅ Minted NFT with ID 0 to deployer: ${deployer.address}`);
-
-    // Approve the Marketplace contract to manage the NFT
-    const approveTx = await myNFT.approve(marketplaceAddress, 0); // Approve token ID 0
-    await approveTx.wait();
-    console.log(`✅ Approved Marketplace to manage NFT ID 0`);
-
-    console.log("------------------------------------------");
 }
 
-// Se recomienda usar este patrón para manejar errores
+// Manejo de errores
 main()
     .then(() => process.exit(0))
     .catch((error) => {
