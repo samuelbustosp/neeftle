@@ -1,14 +1,11 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
-import WalletConnection from './components/WalletConnection';
-import MintNFT from './components/MintNFT';
-import UserNFTCollection from './components/UserNFTCollection';
-import Marketplace from './components/MarketPlace';
-import LogDisplay from './components/LogDisplay';
+import WalletConnection from './components/wallet/WalletConnection';
+import MintNFT from './components/nft/MintNFT';
+import UserNFTCollection from './components/nft/UserNFTCollection';
+import Marketplace from './components/nft/MarketPlace';
 import { useBlockchain } from './hooks/useBlockchain';
-import PrivateLayout from './components/PrivateLayout';
-import Activity from './components/Activity';
-import WalletInfo from './components/WalletInfo';
+import PrivateLayout from './components/layout/PrivateLayout';
+import WalletInfo from './components/wallet/WalletInfo';
 
 const App = () => {
   const blockchain = useBlockchain();

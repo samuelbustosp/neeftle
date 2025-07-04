@@ -1,14 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { 
   Copy, 
   Wallet, 
   TrendingUp, 
   Check, 
   Activity,
-  Clock,
-  ShoppingCart,
-  Tag,
-  X,
   Zap
 } from 'lucide-react';
 import ActivityLogs from "./Activity";

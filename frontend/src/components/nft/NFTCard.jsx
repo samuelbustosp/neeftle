@@ -1,8 +1,13 @@
-import React from 'react';
-import { ShoppingCart, Tag, X, User, Hash } from 'lucide-react';
+import { ShoppingCart, Tag, X, User, Hash, Eye } from 'lucide-react';
 
-const NFTCard = ({ nft, onAction, actionType, isOwner }) => {
+const NFTCard = ({ nft, onAction, actionType, isOwner, onViewDetail }) => {
   console.log('nft image', nft.image);
+  
+  const handleViewDetail = () => {
+    if (onViewDetail) {
+      onViewDetail(nft.tokenId);
+    }
+  };
   
   const getActionButton = () => {
     if (!onAction) return null;
@@ -57,35 +62,28 @@ const NFTCard = ({ nft, onAction, actionType, isOwner }) => {
     }
   };
 
-  const getStatusColor = (status) => {
-    switch (status?.toLowerCase()) {
-      case 'listed':
-      case 'listado':
-        return 'from-green-500/20 to-emerald-500/20 border-green-500/30 text-green-400';
-      case 'sold':
-      case 'vendido':
-        return 'from-blue-500/20 to-cyan-500/20 border-blue-500/30 text-blue-400';
-      case 'owned':
-      case 'propiedad':
-        return 'from-purple-500/20 to-pink-500/20 border-purple-500/30 text-purple-400';
-      default:
-        return 'from-gray-500/20 to-gray-600/20 border-gray-500/30 text-gray-400';
-    }
-  };
+  
+  
 
   return (
     <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-6 shadow-xl text-white hover:bg-white/10 transition-all duration-300 hover:shadow-2xl">
-      {/* NFT Image */}
-      <div className="relative mb-4 rounded-xl overflow-hidden bg-white/5 border border-white/10">
+      {/* NFT Image - Clickeable para ver detalle */}
+      <div className="relative mb-4 rounded-xl overflow-hidden bg-white/5 border border-white/10 group cursor-pointer" onClick={handleViewDetail}>
         <img
           src={nft.image}
           alt={nft.name}
-          className="w-full h-48 object-cover"
+          className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
           onError={(e) => {
             e.target.onerror = null;
             e.target.src = 'https://placehold.co/400x400/808080/FFFFFF?text=Error+Loading';
           }}
         />
+        {/* Overlay con icono de vista */}
+        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+          <div className="bg-white/20 backdrop-blur-sm rounded-full p-3">
+            <Eye className="w-6 h-6 text-white" />
+          </div>
+        </div>
       </div>
 
       {/* NFT Header */}
@@ -132,18 +130,23 @@ const NFTCard = ({ nft, onAction, actionType, isOwner }) => {
           </div>
         )}
 
-        {/* Status */}
-        <div className={`bg-gradient-to-r ${getStatusColor(nft.status)} rounded-lg p-3 border`}>
-          <div className="flex items-center space-x-2">
-            <div className="w-2 h-2 rounded-full bg-current opacity-60"></div>
-            <span className="text-sm text-gray-400">Estado:</span>
-            <span className="font-medium capitalize">{nft.status}</span>
-          </div>
-        </div>
+        
       </div>
 
-      {/* Action Button */}
-      {getActionButton()}
+      {/* Action Buttons */}
+      <div className="space-y-3">
+        {/* Ver Detalle Button */}
+        <button
+          onClick={handleViewDetail}
+          className="w-full py-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 hover:from-purple-500/30 hover:to-pink-500/30 text-purple-300 border border-purple-500/30 rounded-xl font-medium transition-all duration-200 flex items-center justify-center space-x-2"
+        >
+          <Eye className="w-4 h-4" />
+          <span>Ver Detalle</span>
+        </button>
+        
+        {/* Primary Action Button */}
+        {getActionButton()}
+      </div>
     </div>
   );
 };

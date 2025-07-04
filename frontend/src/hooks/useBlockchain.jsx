@@ -483,11 +483,41 @@ export const useBlockchain = () => {
       addLog(`⏳ Minteando NFT en blockchain...`, 'info');
 
       const tx = await state.contracts.myNFT.safeMint(state.currentAccount, tokenURI);
-      await tx.wait();
+      const receipt = await tx.wait();
+
+      // ✅ Obtener el tokenId del evento Transfer emitido
+      let newTokenId = null;
+      
+      // Buscar el evento Transfer en los logs de la transacción
+      for (const log of receipt.logs) {
+        try {
+          const parsedLog = state.contracts.myNFT.interface.parseLog(log);
+          if (parsedLog.name === 'Transfer' && parsedLog.args.from === '0x0000000000000000000000000000000000000000') {
+            newTokenId = parsedLog.args.tokenId.toString();
+            break;
+          }
+        } catch (e) {
+          // Log no es del contrato NFT, continuar
+          continue;
+        }
+      }
+
+      // Si no encontramos el tokenId en los eventos, usar el total supply como alternativa
+      if (!newTokenId) {
+        try {
+          const totalSupply = await state.contracts.myNFT.totalSupply();
+          newTokenId = (totalSupply - 1n).toString(); // El último NFT minteado
+        } catch (e) {
+          console.warn("No se pudo obtener el tokenId del NFT minteado");
+          newTokenId = "unknown";
+        }
+      }
+
       addActivity("mint", newTokenId, {
         name: formData.name,
       });
-      addLog(`🎉 NFT '${formData.name}' minteado exitosamente!`, 'success');
+
+      addLog(`🎉 NFT '${formData.name}' minteado exitosamente! Token ID: ${newTokenId}`, 'success');
 
       setTimeout(() => {
         loadUserNFTs(true);

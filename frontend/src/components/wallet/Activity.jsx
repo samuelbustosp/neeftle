@@ -1,14 +1,10 @@
-import React from 'react';
 import { 
   Activity, 
   Clock, 
   ShoppingCart, 
   Tag, 
   X, 
-  Zap,
   Plus,
-  ArrowUpRight,
-  ArrowDownLeft
 } from 'lucide-react';
 
 const ActivityLogs = ({ activityLogs }) => {

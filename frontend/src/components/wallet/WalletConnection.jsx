@@ -56,17 +56,17 @@ const WalletConnection = ({
 
       <div className="relative z-10 w-full max-w-xs sm:max-w-md lg:max-w-lg xl:max-w-xl">
         {/* Logo and Brand */}
-        <div className="text-center mb-8 sm:mb-12">
-          <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl mb-4 sm:mb-6 shadow-2xl relative">
+        <div className="text-center justify-center flex items-center gap-4 mb-4 sm:mb-6">
+          <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl  shadow-2xl relative">
             <Bird className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
-            <div className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 w-4 h-4 sm:w-6 sm:h-6 bg-yellow-400 rounded-full flex items-center justify-center">
-              <Zap className="w-2 h-2 sm:w-3 sm:h-3 text-yellow-900" />
-            </div>
           </div>
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent mb-2">
-            Neeftle
-          </h1>
-          <p className="text-gray-400 text-base sm:text-lg">El futuro de los NFTs</p>
+          <div className=''>
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent">
+              Neeftle
+            </h1>
+            <p className="text-gray-400 text-base sm:text-lg">El futuro de los NFTs</p>
+          </div>
+          
         </div>
 
         {/* Main Card */}
